@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:jms="http://www.springframework.org/schema/integration/jms"
+       xmlns:int="http://www.springframework.org/schema/integration"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+           http://www.springframework.org/schema/beans/spring-beans.xsd
+           http://www.springframework.org/schema/context
+           http://www.springframework.org/schema/context/spring-context.xsd
+           http://www.springframework.org/schema/aop
+           http://www.springframework.org/schema/aop/spring-aop-4.0.xsd
+           http://www.springframework.org/schema/integration
+           http://www.springframework.org/schema/integration/spring-integration.xsd
+           http://www.springframework.org/schema/integration/jms
+           http://www.springframework.org/schema/integration/jms/spring-integration-jms-2.2.xsd">
+
+    <context:component-scan base-package="edu.berkeley.path.results_queue_workers" />
+    <import resource="classpath:aop-config.xml"/>
+    <!--<import resource="classpath:model-orm-config.xml"/>-->
+    <!--<import resource="classpath*:datasource-*-config.xml"/>-->
+
+    <bean id="persistWorker" class="edu.berkeley.path.results_queue_workers.workers.PersistWorker"></bean>
+    <bean id="LinkDataRaw" class="edu.berkeley.path.results_queue_workers.model.LinkDataRaw"></bean>
+    <bean id="Linkmanager" class="edu.berkeley.path.results_queue_workers.LinkManager"></bean>
+
+
+    <int:channel id="resultChannel"/>
+    <int:channel id="resultCreatedChannel"/>
+    <int:service-activator input-channel="resultChannel"  output-channel="resultCreatedChannel" ref="persistWorker" method="persistLinkResult"/>
+
+    <int:channel id="linkStateSet"/>
+    <int:service-activator input-channel="linkStateSet"  ref="persistWorker" method="persistLinkStateSet"/>
+
+    <!-- ***   pub-sub-domain  True = Topic, False = Queue   ***  -->
+    <jms:message-driven-channel-adapter channel="resultChannel"
+                                        extract-payload="true"
+                                        connection-factory="connectionFactory"
+                                        destination-name="resultPublish"
+                                        pub-sub-domain="false"/>
+
+    <jms:message-driven-channel-adapter channel="linkStateSet"
+                                        extract-payload="true"
+                                        connection-factory="connectionFactory"
+                                        destination-name="ModelEngineTopic"
+                                        pub-sub-domain="true"/>
+
+    <!-- ***   bridge the output channel to a queue channel so we can retrieve the output message after the test executes and verify   ***  -->
+    <int:bridge input-channel="resultCreatedChannel"
+            output-channel="testChannel"/>
+
+    <int:channel id="testChannel">
+        <int:queue/>
+    </int:channel>
+
+
+    <!-- <int:poller default="true" fixed-delay="1000" id="poller"/>  -->
+
+</beans>
