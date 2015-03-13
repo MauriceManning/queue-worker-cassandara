@@ -57,8 +57,8 @@ public class JmsTestConfiguration {
     }
 
     @Bean
-    public Topic linkStateQueue() {
-        return new ActiveMQTopic("ModelEngineTopic");
+    public Topic linkStateTopic() {
+        return new ActiveMQTopic("linkStateSetTopic");
     }
 
     @Bean
@@ -75,7 +75,7 @@ public class JmsTestConfiguration {
     public JmsTemplate jmsTopicTemplate() {
         JmsTemplate jmsTemplate = new JmsTemplate();
         jmsTemplate.setConnectionFactory(connectionFactory());
-        jmsTemplate.setDefaultDestination(linkStateQueue());
+        jmsTemplate.setDefaultDestination(linkStateTopic());
         // ***  True = Topic, False = Queue   ***
         jmsTemplate.setPubSubDomain(true);
         return jmsTemplate;

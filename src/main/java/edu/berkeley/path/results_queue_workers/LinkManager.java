@@ -1,5 +1,7 @@
 package edu.berkeley.path.results_queue_workers;
 
+import edu.berkeley.path.model_objects.jaxb.AggregationType;
+import edu.berkeley.path.model_objects.jaxb.ApplicationType;
 import edu.berkeley.path.results_queue_workers.model.LinkDataRaw;
 import edu.berkeley.path.results_queue_workers.model.Point;
 import org.apache.logging.log4j.LogManager;

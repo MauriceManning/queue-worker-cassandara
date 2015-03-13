@@ -40,10 +40,10 @@
                                         destination-name="resultPublish"
                                         pub-sub-domain="false"/>
 
+
     <jms:message-driven-channel-adapter channel="linkStateSet"
-                                        extract-payload="true"
                                         connection-factory="connectionFactory"
-                                        destination-name="ModelEngineTopic"
+                                        destination-name="linkStateSetTopic"
                                         pub-sub-domain="true"/>
 
     <!-- ***   bridge the output channel to a queue channel so we can retrieve the output message after the test executes and verify   ***  -->

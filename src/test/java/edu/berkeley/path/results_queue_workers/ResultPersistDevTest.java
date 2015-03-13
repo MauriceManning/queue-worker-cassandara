@@ -3,6 +3,8 @@ package edu.berkeley.path.results_queue_workers;
 
 import com.datastax.driver.core.Cluster;
 import com.datastax.driver.core.Session;
+import edu.berkeley.path.model_objects.jaxb.AggregationType;
+import edu.berkeley.path.model_objects.jaxb.ApplicationType;
 import edu.berkeley.path.model_objects.traffic_state.LinkState;
 import edu.berkeley.path.model_objects.traffic_state.LinkStateSet;
 import edu.berkeley.path.model_objects.scenario.Scenario;
@@ -100,7 +102,7 @@ public class ResultPersistDevTest {
                 System.out.println("cassandraOperations.insert: " + ldr  );
 
                 //long latchLimit = latch.getCount();
-                for (long i = 0; i < 100; i++) {
+                for (long i = 0; i < 3; i++) {
                     link.setLinkid(i);
 
                     jmsTemplate.convertAndSend("resultPublish", link);
@@ -145,6 +147,9 @@ public class ResultPersistDevTest {
                 linkState.setCritSpeed(1.0);
                 linkState.setRunId(i);
                 linkState.setId(i);
+                linkState.setAggregationType(1L, "aggType1", "");
+                linkState.setApplicationType(1L, "appType1", "");
+
                 System.out.println("linkState created: " + linkState.toString());
 
                 List linkStateList = new ArrayList<LinkState>();
@@ -158,7 +163,7 @@ public class ResultPersistDevTest {
                 edu.berkeley.path.model_objects.util.Serializer serializer = new edu.berkeley.path.model_objects.util.Serializer();
                 String xmlLSS = serializer.objectToXml(linkStateSet);
 
-                jmsTopicTemplate.convertAndSend("engineResults", xmlLSS);
+                jmsTopicTemplate.convertAndSend("linkStateSetTopic", xmlLSS);
                 logger.info("testLinkStatePublish  convertAndSend");
             }
 

@@ -5,7 +5,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.PropertySource;
+import org.springframework.context.annotation.Profile;
 import org.springframework.core.env.Environment;
 import org.springframework.data.cassandra.config.CassandraClusterFactoryBean;
 import org.springframework.data.cassandra.config.CassandraSessionFactoryBean;
@@ -19,11 +19,12 @@ import org.springframework.data.cassandra.mapping.CassandraMappingContext;
 import org.springframework.data.cassandra.repository.config.EnableCassandraRepositories;
 
 @Configuration
+@Profile("dev")
 //@PropertySource(value = { "classpath:cassandra.properties" })
 @EnableCassandraRepositories(basePackages = { "edu.berkeley.path.results_queue_workers" })
-public class CassandraConfig {
+public class CassandraDevConfig {
 
-    private static final Logger LOG = LoggerFactory.getLogger(CassandraConfig.class);
+    private static final Logger LOG = LoggerFactory.getLogger(CassandraDevConfig.class);
 
     @Autowired
     private Environment env;

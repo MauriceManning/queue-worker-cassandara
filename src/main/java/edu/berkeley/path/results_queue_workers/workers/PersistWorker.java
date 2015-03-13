@@ -90,21 +90,43 @@ public class PersistWorker {
 
             for (LinkState ls : linkStateSet.getLinkState()) {
 
-                Insert insert = QueryBuilder.insertInto("linkStateset");
+                Insert insert = QueryBuilder.insertInto("link_data_total");   //test cassandra
                 insert.setConsistencyLevel(ConsistencyLevel.ONE);
-                insert.value("id", ls.getId());
-                insert.value("linkTime", linkStateSet.getTimestamp());
-                insert.value("network_id", linkStateSet.getNetworkId());
-                insert.value("run_id", ls.getRunId());
-                insert.value("particle_id", linkStateSet.getParticleId());
-                insert.value("dt", linkStateSet.getDt());
-                insert.value("quantity_type", linkStateSet.getQuantityType());
-                insert.value("density", ls.getDensity());
-                insert.value("jam_density", ls.getJamDensity());
+
+                insert.value("app_run_id", linkStateSet.getRunId() );
+                insert.value("ts", linkStateSet.getTimestamp() );
+                insert.value("link_id", ls.getId());
+                insert.value("agg_type", ls.getAggregationType().getId());
+                insert.value("app_type_id", ls.getApplicationType().getId());
+                insert.value("capacity", ls.getCapacity());
                 insert.value("capacity_drop", ls.getCapacityDrop());
-                insert.value("ff_speed", ls.getFfSpeed());
-                insert.value("crit_speed", ls.getCritSpeed());
-                insert.value("congestion_speed", ls.getCongestionSpeed());
+                insert.value("congestion_wave_speed", ls.getCongestionSpeed());
+                insert.value("critical_speed", ls.getCritSpeed());
+                insert.value("density", ls.getDensity());
+                insert.value("free_flow_speed", ls.getFfSpeed());
+                //insert.value("in_flow", ls.());
+                insert.value("jam_density", ls.getJamDensity());
+                insert.value("network_id", linkStateSet.getNetworkId());
+                //insert.value("out_flow", ls.());
+
+
+
+
+//                Insert insert = QueryBuilder.insertInto("linkStateset");
+//                insert.setConsistencyLevel(ConsistencyLevel.ONE);
+//                insert.value("id", ls.getId());
+//                insert.value("linkTime", linkStateSet.getTimestamp());
+//                insert.value("network_id", linkStateSet.getNetworkId());
+//                insert.value("run_id", ls.getRunId());
+//                insert.value("particle_id", linkStateSet.getParticleId());
+//                insert.value("dt", linkStateSet.getDt());
+//                insert.value("quantity_type", linkStateSet.getQuantityType());
+//                insert.value("density", ls.getDensity());
+//                insert.value("jam_density", ls.getJamDensity());
+//                insert.value("capacity_drop", ls.getCapacityDrop());
+//                insert.value("ff_speed", ls.getFfSpeed());
+//                insert.value("crit_speed", ls.getCritSpeed());
+//                insert.value("congestion_speed", ls.getCongestionSpeed());
 
                 logger.info("cassandraOperations insert:  " + insert.toString() );
 //                insert.value("", );
